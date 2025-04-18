@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -37,7 +38,28 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
+    'api',
+    'rest_framework',
+    'django.contrib.admindocs',
+    'rest_framework_simplejwt'
 ]
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),  # Время жизни токена доступа
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # Время жизни токена обновления
+    'ROTATE_REFRESH_TOKENS': False,  # Настроить ли обновление токенов
+    'BLACKLIST_AFTER_ROTATION': True,  # Блокировать старые токены после их обновления
+    'UPDATE_LAST_LOGIN': False,  # Не обновлять дату последнего входа
+    'ALGORITHM': 'HS256',  # Алгоритм подписи
+    'SIGNING_KEY': SECRET_KEY,  # Секретный ключ
+    'VERIFYING_KEY': None,  # Ключ для проверки подписи (если используется)
+    'LEEWAY': 0,  # Допустимое отклонение времени
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -47,9 +69,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'ecoBack.urls'
+CORS_ALLOW_ALL_ORIGINS = True 
 
 TEMPLATES = [
     {
@@ -80,7 +104,7 @@ DATABASES = {
     }
 }
 
-
+AUTH_USER_MODEL='api.CustomerUser'
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
